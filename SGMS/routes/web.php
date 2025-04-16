@@ -9,6 +9,7 @@ use App\Http\Controllers\SubjectsController;   // Import SubjectsController
 use App\Http\Controllers\ExamsController;      // Import ExamsController
 use App\Http\Controllers\MarksController;      // Import MarksController
 
+
 Route::get('/', function () {
     return redirect('/login'); // Redirect to login page on startup
 });
@@ -49,7 +50,11 @@ Route::get('/attendances/view/{student_id}/{date}', [AttendanceController::class
 Route::get('/subjects', [SubjectsController::class, 'index'])->name('subjects')->middleware('auth');
 
 // Route untuk Exams
-Route::get('/exams', [ExamsController::class, 'index'])->name('exams')->middleware('auth');
+Route::get('/exams', [ExamsController::class, 'index'])->name('exams.index')->middleware('auth');  // Senarai Peperiksaan
+Route::post('/exams/create', [ExamsController::class, 'create'])->name('exams.create')->middleware('auth');  // Cipta Peperiksaan
+Route::get('/exams/{id}/edit', [ExamsController::class, 'edit'])->name('exams.edit')->middleware('auth');  // Edit Peperiksaan
+Route::post('/exams/{id}/update', [ExamsController::class, 'update'])->name('exams.update')->middleware('auth');  // Kemas Kini Peperiksaan
+Route::delete('/exams/{id}', [ExamsController::class, 'destroy'])->name('exams.destroy')->middleware('auth');  // Padam Peperiksaan
 
 // Route untuk Marks
 Route::get('/marks', [MarksController::class, 'index'])->name('marks')->middleware('auth');
