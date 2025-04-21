@@ -5,51 +5,60 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\Student;
+use App\Models\Subject; // Pastikan Subject diimport
 
 class AttendanceController extends Controller
 {
-    // Fungsi untuk memaparkan kalendar dan senarai pelajar untuk rekod kehadiran
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::all();  // Ambil semua pelajar
-        return view('attendances.index', compact('students'));
+        // Ambil semua pelajar
+        $students = Student::all();
+
+        // Ambil semua subjek
+        $subjects = Subject::all();
+
+        // Hantar data pelajar dan subjek ke view
+        return view('attendances.index', compact('students', 'subjects'));
     }
 
     // Fungsi untuk menyimpan kehadiran
     public function store(Request $request)
     {
-        // Validasi input kehadiran
+        // Validasi data yang dihantar dari form
         $request->validate([
-            'attendance' => 'required|array',
-            'attendance.*' => 'in:present,absent',
-            'date' => 'required|date'
+            'date' => 'required|date',
+            'subject_id' => 'required|exists:subjects,id',  // Pastikan subject_id ada dalam subjects table
+            'attendance' => 'required|array',  // Pastikan attendance adalah array
+            'attendance.*' => 'in:present,absent',  // Memastikan status adalah 'present' atau 'absent'
         ]);
-
+    
+        // Simpan rekod kehadiran untuk setiap pelajar
         foreach ($request->attendance as $studentId => $status) {
-            // Simpan rekod kehadiran pelajar
             Attendance::create([
                 'student_id' => $studentId,
+                'subject_id' => $request->subject_id,  // Subjek yang dipilih
                 'status' => $status,
-                'date' => $request->date,
+                'date' => $request->date,  // Tarikh yang dipilih
             ]);
         }
-
+    
+        // Redirect ke halaman kehadiran dengan mesej kejayaan
         return redirect()->route('attendances.index')->with('success', 'Attendance recorded successfully!');
-    }
+    }    
 
-    // Fungsi untuk melihat rekod kehadiran pelajar pada tarikh tertentu
-    public function view($student_id, $date)
+    // Fungsi untuk melihat kehadiran pelajar untuk subjek tertentu
+    public function view($id, Request $request)
     {
-        // Cari rekod kehadiran berdasarkan student_id dan date
-        $attendance = Attendance::where('student_id', $student_id)
-                                ->where('date', $date)
-                                ->first();
-        
-        if (!$attendance) {
-            // Jika tiada kehadiran untuk pelajar ini pada tarikh tersebut
-            return redirect()->route('attendances.index')->with('error', 'Attendance record not found.');
-        }
-
-        return view('attendances.view', compact('attendance'));
+        $date = $request->input('date', now()->format('Y-m-d'));  // Mengambil tarikh yang dimasukkan oleh pengguna atau tarikh semasa
+        $month = $request->input('month'); // Mengambil bulan yang dimasukkan oleh pengguna
+    
+        // Mendapatkan rekod kehadiran berdasarkan pelajar, tarikh, dan bulan
+        $attendance = Attendance::where('student_id', $id)
+                                ->where('date', $date)  // Memastikan kehadiran difilter dengan betul berdasarkan tarikh
+                                ->get();
+    
+        // Menghantar data kepada view
+        return view('students.view', compact('attendance', 'date', 'month'));
     }
+    
 }

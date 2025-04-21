@@ -15,7 +15,7 @@
                 <li><a href="{{ route('dashboard') }}" class="block py-3 px-5 hover:bg-gray-700">Dashboard</a></li>
                 <li><a href="{{ route('students') }}" class="block py-3 px-5 hover:bg-gray-700">Students</a></li>
                 <li><a href="{{ route('attendances.index') }}" class="block py-3 px-5 hover:bg-gray-700">Record Attendance</a></li>
-                <li><a href="{{ route('subjects') }}" class="block py-3 px-5 hover:bg-gray-700">Subjects</a></li>
+                <a href="{{ route('subjects.index') }}" class="block py-3 px-5 hover:bg-gray-700">Subjects</a>
                 <li><a href="{{ route('exams.index') }}" class="block py-3 px-5 hover:bg-gray-700">Exams</a></li> <!-- Pautan Senarai Peperiksaan -->
                 <li><a href="{{ route('marks') }}" class="block py-3 px-5 hover:bg-gray-700">Marks</a></li>
                 <!-- Form untuk logout -->

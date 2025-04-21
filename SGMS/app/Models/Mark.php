@@ -9,12 +9,12 @@ class Mark extends Model
 {
     use HasFactory;
 
-    // Nyatakan table jika nama table tidak mengikut konvensyen Laravel
-    protected $table = 'marks';
+    // Senarai atribut yang boleh diisi
+    protected $fillable = ['student_id', 'marks', 'grade', 'is_pass'];
 
-    // Tentukan fields yang boleh diisi
-    protected $fillable = ['student_id', 'subject_id', 'marks_obtained'];
-
-    // Jika anda menggunakan timestamps (created_at dan updated_at)
-    public $timestamps = true;
+    // Hubungan dengan pelajar
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

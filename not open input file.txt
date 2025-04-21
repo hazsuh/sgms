@@ -1,0 +1,6 @@
+cd C:\SGMS\SGMS ---> kalau keluar 
+
+PS C:\SGMS> php artisan serve
+>> 
+Could not open input file: artisan
+PS C:\SGMS> 

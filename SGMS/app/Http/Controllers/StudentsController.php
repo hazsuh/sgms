@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;  // Import model Student
+use App\Models\Subject;  // Import model Subject
+use App\Models\Attendance;  // Import model Attendance
 use Illuminate\Http\Request;
 
 class StudentsController extends Controller
@@ -10,8 +12,8 @@ class StudentsController extends Controller
     // Fungsi untuk memaparkan senarai pelajar
     public function index()
     {
-        // Ambil semua data pelajar dari database
-        $students = Student::all();
+        // Ambil semua data pelajar dari database dengan subjek dan kehadiran
+        $students = Student::with(['subjects', 'attendance'])->get();
         
         // Paparkan view dengan data pelajar
         return view('students.index', compact('students'));
@@ -100,13 +102,26 @@ class StudentsController extends Controller
 
         // Jika pelajar tidak dijumpai
         if (!$student) {
-            return redirect()->route('students')->with('error', 'Pelajar tidak dijumpai!');
+            return redirect()->route('students')->with('error', 'Student not found!');
         }
 
         // Padamkan pelajar
         $student->delete();
 
         // Redirect kembali ke senarai pelajar dengan mesej kejayaan
-        return redirect()->route('students')->with('success', 'Pelajar berjaya dipadamkan!');
+        return redirect()->route('students')->with('success', 'Student successfully deleted!');
+    }
+
+    // Fungsi untuk memaparkan maklumat pelajar beserta subjek dan kehadiran
+    public function view($id)
+    {
+        // Ambil data pelajar berdasarkan ID dan relasi dengan subjek
+        $student = Student::with('subjects')->findOrFail($id);
+        
+        // Ambil rekod kehadiran pelajar berdasarkan ID
+        $attendance = Attendance::where('student_id', $id)->get(); 
+        
+        // Hantar data pelajar, subjek, dan kehadiran ke view
+        return view('students.view', compact('student', 'attendance'));
     }
 }

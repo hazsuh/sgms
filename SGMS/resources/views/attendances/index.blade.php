@@ -1,4 +1,4 @@
-@extends('layouts.app') <!-- Menggunakan layout yang ada sidebar -->
+@extends('layouts.app') <!-- Menggunakan layout dengan sidebar -->
 
 @section('content')
     <h2 class="text-3xl font-bold mb-6">Record Attendance</h2>
@@ -8,11 +8,22 @@
         @csrf
         <div class="mb-4">
             <label for="date" class="block text-sm font-medium text-gray-600">Date</label>
-            <input type="date" name="date" id="date" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+            <input type="date" name="date" id="date" class="mt-1 p-2 w-full border border-gray-300 rounded-md" value="{{ request('date') ?? '2025-04-16' }}" required>
         </div>
 
-        <!-- Hidden Input for Date (for View Button) -->
-        <input type="hidden" name="date" value="{{ request('date') }}">
+        <!-- Hidden Input for Date -->
+        <input type="hidden" name="date" value="{{ request('date') ?? '2025-04-16' }}">
+
+        <!-- Dropdown untuk memilih subjek -->
+        <div class="mb-4">
+            <label for="subject_id" class="block text-sm font-medium text-gray-600">Subject</label>
+            <select name="subject_id" id="subject_id" class="mt-1 p-2 w-full border border-gray-300 rounded-md" required>
+                <option value="">Select Subject</option>
+                @foreach($subjects as $subject)
+                    <option value="{{ $subject->id }}" {{ old('subject_id') == $subject->id ? 'selected' : '' }}>{{ $subject->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
         <!-- Attendance Form -->
         <table class="w-full table-auto">
@@ -21,7 +32,6 @@
                     <th class="px-4 py-2 text-left">No Matric</th>
                     <th class="px-4 py-2 text-left">Name</th>
                     <th class="px-4 py-2 text-left">Attendance</th>
-                    <th class="px-4 py-2 text-left">Action</th> <!-- Add Action Column for View -->
                 </tr>
             </thead>
             <tbody>
@@ -34,13 +44,6 @@
                                 <option value="present">Present</option>
                                 <option value="absent">Absent</option>
                             </select>
-                        </td>
-                        <td class="px-4 py-2">
-                            <!-- Print Date for Debugging -->
-                            {{ request('date') }} <!-- Tambah baris ini untuk melihat tarikh yang dihantar -->
-                            
-                            <!-- View Button -->
-                            <a href="{{ route('attendances.view', ['student_id' => $student->id, 'date' => request('date')]) }}" class="text-blue-500 hover:text-blue-700">View</a>
                         </td>
                     </tr>
                 @endforeach

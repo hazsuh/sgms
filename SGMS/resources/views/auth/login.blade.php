@@ -25,13 +25,6 @@
                     <label for="password" class="block text-sm font-medium text-gray-600">Password</label>
                     <input type="password" name="password" id="password" class="mt-1 p-2 w-full border border-gray-300 rounded-md" placeholder="Enter your password" required>
                 </div>
-                <div class="flex items-center justify-between">
-                    <label for="remember" class="inline-flex items-center">
-                        <input type="checkbox" name="remember" id="remember" class="form-checkbox">
-                        <span class="ml-2 text-sm">Remember Me</span>
-                    </label>
-                    <a href="#" class="text-sm text-blue-500">Forgot Your Password?</a>
-                </div>
                 <button type="submit" class="w-full mt-4 py-2 px-4 bg-black text-white rounded-md hover:bg-gray-800">Login</button>
             </form>
         </div>

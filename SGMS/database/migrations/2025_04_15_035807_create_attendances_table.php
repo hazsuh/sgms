@@ -9,16 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->onDelete('cascade'); // Foreign key untuk student_id
-            $table->string('status'); // Menyimpan status kehadiran: present/absent
-            $table->date('date'); // Tarikh kehadiran
-            $table->timestamps(); // Timestamp untuk created_at dan updated_at
+            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignId('subject_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['present', 'absent']);
+            $table->date('date');
+            $table->timestamps();
         });
-    }
+    }      
 
     /**
      * Reverse the migrations.
